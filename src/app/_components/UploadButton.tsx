@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useUploadThing } from "~/utils/uploadthing";
+import { toast } from "sonner";
+import { LoaderCircle } from "lucide-react";
 
 // inferred input off useUploadThing
 type Input = Parameters<typeof useUploadThing>;
@@ -48,10 +50,40 @@ const UploadSVG = () => {
   );
 };
 
+// testing toast
+// const makeUploadToast = () => {
+//   return toast(
+//     <div className="flex items-center gap-2">
+//       <LoaderCircle className="animate-spin stroke-white text-white" />
+//       <span className="text-lg">Uploading ...</span>
+//     </div>,
+//     {
+//       duration: 10000,
+//       id: "upload-begin",
+//     },
+//   );
+// }
+
+// window.makeToast = makeUploadToast;
+
 const UploadButton = () => {
   const router = useRouter();
   const { inputProps } = useUploadThingInputProps("imageUploader", {
+    onUploadBegin: () => {
+      toast(
+        <div className="flex items-center gap-2">
+          <LoaderCircle className="animate-spin stroke-white text-white" />
+          <span className="text-lg">Uploading ...</span>
+        </div>,
+        {
+          duration: 10000,
+          id: "upload-begin",
+        },
+      );
+    },
     onClientUploadComplete: () => {
+      toast.dismiss("upload-begin");
+      toast("Upload Complete!");
       router.refresh();
     },
   });
